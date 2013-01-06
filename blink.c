@@ -1,8 +1,14 @@
 #include <avr/io.h>
 #include <util/delay.h>
-#include <avr/pgmspace.h>
 
-char data[16160];
+/*
+
+// Test filling up flash area with junk
+
+#include <avr/pgmspace.h>
+char data[16160] PROGMEM; 
+
+*/
 
 int main(void) {
 

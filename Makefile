@@ -25,6 +25,10 @@ clean:
 burn: $(HEX_FILE)
 	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c arduino -b 19200 -U flash:w:"$(HEX_FILE)" -P $(SERIAL_PORT)
 
+# Program using AVRISP mkII (faster & can use more flash, but stomps the bootloader)
+burn2: $(HEX_FILE)
+	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c avrisp2 -U flash:w:"$(HEX_FILE)" -P usb
+
 report: $(ELF_FILE)
 	avr-size -C "$(ELF_FILE)" --mcu=$(PART)
 
