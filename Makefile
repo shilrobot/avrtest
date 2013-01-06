@@ -23,7 +23,7 @@ clean:
 
 # Program using Arduino
 burn: $(HEX_FILE)
-	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c arduino -b 19200 -U flash:w:"$(HEX_FILE)" -P $(SERIAL_PORT)
+	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c arduino -b 19200 -U flash:w:"$(HEX_FILE)" -P $(SERIAL_PORT) -D
 
 # Program using AVRISP mkII (faster & can use more flash, but stomps the bootloader)
 burn2: $(HEX_FILE)
