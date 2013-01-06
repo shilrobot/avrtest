@@ -1,12 +1,11 @@
-
-AVRDUDE_CONF=d:/Bulk/Downloads/arduino-1.0-windows/arduino-1.0/hardware/tools/avr/etc/avrdude.conf
-SERIAL_PORT=COM3
-PART=atmega168
+SERIAL_PORT := COM3
+PART := atmega168
+FREQUENCY := 16000000
 
 all: blink.hex
 
 blink.elf: blink.c
-	avr-gcc -mmcu=$(PART) -DF_CPU=16000000UL -Os -Wall blink.c -o blink.elf
+	avr-gcc -mmcu=$(PART) -DF_CPU=$(FREQUENCY)UL -Os -Wall blink.c -o blink.elf
 
 blink.hex: blink.elf
 	avr-objcopy -O ihex blink.elf blink.hex
