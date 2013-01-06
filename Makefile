@@ -1,23 +1,31 @@
+# general config stuff
 SERIAL_PORT := COM3
 PART := atmega168
 FREQUENCY := 16000000
 
-all: blink.hex
+# input C files
+SOURCE_FILES := blink.c
 
-blink.elf: blink.c
-	avr-gcc -mmcu=$(PART) -DF_CPU=$(FREQUENCY)UL -Os -Wall blink.c -o blink.elf
+# intermediate files
+ELF_FILE := project.elf
+HEX_FILE := project.hex
 
-blink.hex: blink.elf
-	avr-objcopy -O ihex blink.elf blink.hex
+all: $(HEX_FILE)
+
+$(ELF_FILE): $(SOURCE_FILES)
+	avr-gcc -mmcu=$(PART) -DF_CPU=$(FREQUENCY)UL -Os -Wall $< -o $@
+
+$(HEX_FILE): $(ELF_FILE)
+	avr-objcopy -O ihex $< $@
 
 clean:
-	rm -rf blink.elf blink.hex
+	rm -rf "$(HEX_FILE)" "$(ELF_FILE)"
 
 # Program using Arduino
-burn: blink.hex
-	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c arduino -b 19200 -U flash:w:blink.hex -P $(SERIAL_PORT)
+burn: $(HEX_FILE)
+	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c arduino -b 19200 -U flash:w:"$(HEX_FILE)" -P $(SERIAL_PORT)
 
-report: blink.hex
-	avr-size -C blink.elf --mcu=$(PART)
+report: $(ELF_FILE)
+	avr-size -C "$(ELF_FILE)" --mcu=$(PART)
 
 .PHONY: clean burn
