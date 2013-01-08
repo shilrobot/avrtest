@@ -4,7 +4,7 @@ SERIAL_PORT := COM4
 # this is for an arduino UNO R3 (or clone)
 # Use the Arduino IDE to flash the bootloader (optiboot, only 512B) & fuse bits
 # Otherwise, for no bootloader use these fuse bits:
-# -lfuse:w:0xFF:m -U hfuse:w:0xDB:m -U efuse:w:0x05:m
+# -U lfuse:w:0xFF:m -U hfuse:w:0xDB:m -U efuse:w:0x05:m
 # They are the same as the default UNO R3 fuses except no boot reset vector.
 # Fuse bits HAVE to be verified & modified if you aren't using ATmega328P!
 PART := atmega328p
