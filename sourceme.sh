@@ -1,2 +1,2 @@
-export PATH=$PATH:/cygdrive/d/Bulk/Downloads/arduino-1.0-windows/arduino-1.0/hardware/tools/avr/bin
-export AVRDUDE_CONF=d:/Bulk/Downloads/arduino-1.0-windows/arduino-1.0/hardware/tools/avr/etc/avrdude.conf
+# Necessary if you are on windows (eg cygwin)
+export PATH="$PATH:/cygdrive/c/Program Files (x86)/Atmel/AVR Tools/AVR Toolchain/bin"

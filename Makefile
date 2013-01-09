@@ -12,16 +12,21 @@ FREQUENCY := 16000000
 BOOTLOADER_BAUD_RATE := 115200
 
 # input C files
-SOURCE_FILES := blink.c
+SOURCE_FILES := blink.cpp
 
 # intermediate files
 ELF_FILE := project.elf
 HEX_FILE := project.hex
 
+CXXFLAGS := -DF_CPU=$(FREQUENCY)UL \
+			-Os \
+			-Wall -pedantic \
+			-fpack-struct -fshort-enums -ffunction-sections -fdata-sections -Wl,--relax,--gc-sections
+
 all: $(HEX_FILE)
 
 $(ELF_FILE): $(SOURCE_FILES)
-	avr-gcc -mmcu=$(PART) -DF_CPU=$(FREQUENCY)UL -Os -Wall $< -o $@
+	avr-g++ -mmcu=$(PART) $(CXXFLAGS) $< -o $@
 
 $(HEX_FILE): $(ELF_FILE)
 	avr-objcopy -O ihex $< $@
@@ -31,11 +36,11 @@ clean:
 
 # Program using Arduino
 burn: $(HEX_FILE)
-	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c arduino -b $(BOOTLOADER_BAUD_RATE) -U flash:w:"$(HEX_FILE)" -P $(SERIAL_PORT) -D
+	avrdude -p $(PART) -c arduino -b $(BOOTLOADER_BAUD_RATE) -D -P $(SERIAL_PORT) -U flash:w:"$(HEX_FILE)"
 
 # Program using AVRISP mkII (faster & can use more flash, but stomps the bootloader)
 burn2: $(HEX_FILE)
-	avrdude -C "$(AVRDUDE_CONF)" -p $(PART) -c avrisp2 -U flash:w:"$(HEX_FILE)" -P usb 
+	avrdude -p $(PART) -c avrisp2 -P usb -U flash:w:"$(HEX_FILE)"
 
 report: $(ELF_FILE)
 	avr-size -C "$(ELF_FILE)" --mcu=$(PART)
