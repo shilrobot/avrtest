@@ -7,7 +7,7 @@ SERIAL_PORT := COM4
 # -U lfuse:w:0xFF:m -U hfuse:w:0xDB:m -U efuse:w:0x05:m
 # They are the same as the default UNO R3 fuses except no boot reset vector.
 # Fuse bits HAVE to be verified & modified if you aren't using ATmega328P!
-PART := atmega328p
+PART := atmega324p
 FREQUENCY := 16000000
 BOOTLOADER_BAUD_RATE := 115200
 
@@ -32,7 +32,7 @@ $(HEX_FILE): $(ELF_FILE)
 	avr-objcopy -O ihex $< $@
 
 clean:
-	rm -rf "$(HEX_FILE)" "$(ELF_FILE)"
+	rm -rf "$(HEX_FILE)" "$(ELF_FILE)" *.fuse.tmp
 
 # Program using Arduino
 burn: $(HEX_FILE)
@@ -42,7 +42,16 @@ burn: $(HEX_FILE)
 burn2: $(HEX_FILE)
 	avrdude -p $(PART) -c avrisp2 -P usb -U flash:w:"$(HEX_FILE)"
 
+read-fuses:
+	avrdude -p $(PART) -c avrisp2 -P usb -U lfuse:r:lfuse.fuse.tmp:h -U hfuse:r:hfuse.fuse.tmp:h -U efuse:r:efuse.fuse.tmp:h
+	cat lfuse.fuse.tmp
+	cat hfuse.fuse.tmp
+	cat efuse.fuse.tmp
+
+write-fuses-atmega324p:
+	avrdude -p $(PART) -c avrisp2 -P usb -U lfuse:w:0xFF:m -U hfuse:w:0x99:m -U efuse:w:0xFF:m
+
 report: $(ELF_FILE)
 	avr-size -C "$(ELF_FILE)" --mcu=$(PART)
 
-.PHONY: clean burn
+.PHONY: clean burn burn2 read-fuses write-fuses-atmega324p

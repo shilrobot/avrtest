@@ -71,22 +71,86 @@ void uart_init()
     UCSR0C = _BV(UCSZ01) | _BV(UCSZ00);
 }
 
+// all port C
+const int SHIFT_LATCH_PIN = 0;
+const int SHIFT_CLK_PIN = 6;
+const int SHIFT_IN_PIN = 7;
+
+#define WRITE(__port, __pin, __value) if(__value) { (__port) |= _BV(__pin); } else { (__port) &= ~(_BV(__pin)); }
+
+void write_leds(uint8_t data)
+{
+    for(int i=0; i<8; ++i)
+    {
+        WRITE(PORTC, SHIFT_IN_PIN, data & (1<<i));
+        _delay_ms(1);
+        WRITE(PORTC, SHIFT_CLK_PIN, 1);
+        _delay_ms(1);
+        WRITE(PORTC, SHIFT_CLK_PIN, 0);
+        _delay_ms(1);
+    }
+    WRITE(PORTD, SHIFT_LATCH_PIN, 1);
+    _delay_ms(1);
+    WRITE(PORTD, SHIFT_LATCH_PIN, 0);
+    _delay_ms(1);
+}
+
 int main(void)
 {
-    uart_init();
+    //uart_init();
+
+    DDRC |= _BV(SHIFT_LATCH_PIN);
+    DDRC |= _BV(SHIFT_CLK_PIN);
+    DDRC |= _BV(SHIFT_IN_PIN);
+    WRITE(PORTC, SHIFT_IN_PIN, 0);
+    WRITE(PORTC, SHIFT_LATCH_PIN, 0);
+    WRITE(PORTD, SHIFT_LATCH_PIN, 0);
 
     // Blink pin 5 on port B
     // (the LED on digital port 13 on Arduino)
 
-    DDRD |= _BV(2);
+    //DDRD |= _BV(0);
+
+    bool goingDown = false;
+    int pos = 0;
 
     while(1)
     {
-        PORTD |= _BV(2);
+        /*PORTD |= _BV(0);
         _delay_ms(500);
-        PORTD &= ~_BV(2);
-        _delay_ms(250);
+        PORTD &= ~_BV(0);
+        _delay_ms(500);*/
 
-        uart_print_line_P(PSTR("Test writing to serial port"));
+        write_leds(1 << 0);
+        _delay_ms(100);
+        write_leds(1 << 1);
+        _delay_ms(100);
+        write_leds(1 << 2);
+        _delay_ms(100);
+        write_leds(1 << 3);
+        _delay_ms(100);
+        write_leds(1 << 4);
+        _delay_ms(100);
+        write_leds(1 << 5);
+        _delay_ms(100);
+        write_leds(1 << 6);
+        _delay_ms(100);
+        write_leds(1 << 7);
+        _delay_ms(100);
+        write_leds(1 << 6);
+        _delay_ms(100);
+        write_leds(1 << 5);
+        _delay_ms(100);
+        write_leds(1 << 4);
+        _delay_ms(100);
+        write_leds(1 << 3);
+        _delay_ms(100);
+        write_leds(1 << 2);
+        _delay_ms(100);
+        write_leds(1 << 1);
+        _delay_ms(100);
+
+
+        //uart_print_line_P(PSTR("Test writing to serial port"));
     }
 }
