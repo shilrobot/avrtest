@@ -68,6 +68,5 @@ int main(void)
         light_pin(3);
         light_pin(2);
         light_pin(1);
-        light_pin(0);
     }
 }
