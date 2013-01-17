@@ -1,3 +1,5 @@
+# Base rules for all individual project makefiles
+
 # Sets the clock frequency being used with the target device
 ifndef FREQUENCY
 FREQUENCY := 16000000
